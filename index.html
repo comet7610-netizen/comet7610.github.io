@@ -48,21 +48,8 @@ h3{margin:0 0 6px;font-size:11px;letter-spacing:.08em;color:var(--muted);font-we
 .rooms .r button.go{flex:1;text-align:left}
 .rooms .r button.lt{width:34px;padding:6px 0;text-align:center;font-family:var(--mono);font-size:11px}
 #right{right:max(16px,env(safe-area-inset-right,0px));top:calc(var(--topH,60px) + 20px + env(safe-area-inset-top,0px));width:236px;max-height:calc(100% - 170px);overflow:auto;display:flex;flex-direction:column;gap:10px}
-#bottom{left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:calc(100% - 32px)}
-.stat b{font-family:var(--mono);font-size:18px;font-weight:500;display:block;line-height:1.1}
-.stat span{font-size:10px;color:var(--muted)}
-.pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;background:var(--chip)}
-.pill.wait{background:var(--warm);color:#25190a;font-weight:700}
-.pill.done{background:var(--accent);color:var(--accent-fg);font-weight:700}
-.bar{height:6px;border-radius:9px;background:var(--chip);overflow:hidden}
-.bar i{display:block;height:100%;background:var(--accent);transition:width .4s}
 .card{border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:6px}
 .card.sel{border-color:var(--accent)}
-.log{max-height:130px;overflow:auto;font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
-.log div b{color:var(--fg);font-family:var(--mono);font-weight:400;margin-right:6px}
-.steps{display:flex;gap:2px}
-.steps i{flex:1;height:4px;border-radius:3px;background:var(--chip)}
-.steps i.d{background:var(--accent)} .steps i.c{background:var(--warm)}
 #modal{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
 #modal .box{background:var(--panel-solid);border:1px solid var(--line);border-radius:14px;padding:16px;width:min(440px,100%);display:flex;flex-direction:column;gap:10px}
 #hint{position:fixed;z-index:4;left:50%;bottom:calc(74px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);font-size:11px;color:var(--muted);background:var(--panel);padding:4px 10px;border-radius:99px;pointer-events:none;white-space:nowrap;max-width:calc(100% - 32px);overflow:hidden;text-overflow:ellipsis}
@@ -84,17 +71,13 @@ h3{margin:0 0 6px;font-size:11px;letter-spacing:.08em;color:var(--muted);font-we
   #left,#right{display:none}
   body.leftOpen #left,body.rightOpen #right{display:flex;position:fixed;z-index:30;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));top:calc(10px + env(safe-area-inset-top,0px));bottom:auto;width:auto;max-height:calc(100% - 20px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow:auto;background:var(--panel-solid)}
   .sheetClose{display:block;position:sticky;top:0;align-self:flex-end;z-index:2;width:36px;height:32px;padding:0;margin-bottom:-4px}
-  #bottom{gap:12px;padding:6px 12px}
-  #sDept{display:none}
-  .stat b{font-size:15px}
   #hint{display:none}
 }
-#newTask,#newMeet,#bottom{display:none!important}
 </style>
 
 <div id="stage"></div>
 
-<button id="rightToggle" class="hud lt-btn rt-btn" aria-expanded="false" aria-label="檢視與指派任務" title="檢視／指派任務"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/></svg></button>
+<button id="rightToggle" class="hud lt-btn rt-btn" aria-expanded="false" aria-label="檢視" title="檢視"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/></svg></button>
 <div class="hud" id="top">
   <div id="clock"><span id="clk">08:00</span><small id="phase">白天</small></div>
   <div class="row" role="group" aria-label="時間">
@@ -133,27 +116,9 @@ h3{margin:0 0 6px;font-size:11px;letter-spacing:.08em;color:var(--muted);font-we
 
 <div class="hud" id="right">
   <button class="sheetClose" aria-label="關閉">✕</button>
-  <div id="inspect"><h3>檢視</h3><div style="color:var(--muted);line-height:1.6">點選員工、工作桌、任務看板或海報。<br>拖曳旋轉，滾輪縮放，右鍵拖曳平移。</div></div>
-  <div class="card" id="newTask">
-    <h3>CEO 指派任務</h3>
-    <input type="text" id="ntTitle" placeholder="任務名稱，例如：春季新品視覺企劃" maxlength="40" aria-label="任務名稱">
-    <label class="row" style="font-size:12px"><input type="checkbox" id="ntRes"> 需要研究部先行調查</label>
-    <button class="primary" id="ntGo">指派給企劃部</button>
-  </div>
-  <div class="card" id="newMeet">
-    <h3>召開會議</h3>
-    <input type="text" id="mtTopic" placeholder="會議題目，例如：春季新品企劃討論" maxlength="40" aria-label="會議題目">
-    <button class="primary" id="mtGo">開會</button>
-  </div>
+  <div id="inspect"><h3>檢視</h3><div style="color:var(--muted);line-height:1.6">點選接待員。<br>拖曳旋轉，滾輪縮放，右鍵拖曳平移。</div></div>
 </div>
 
-<div class="hud" id="bottom">
-  <div class="stat"><b id="sTotal">0</b><span>總任務</span></div>
-  <div class="stat"><b id="sRun">0</b><span>進行中</span></div>
-  <div class="stat"><b id="sWait" style="color:var(--warm)">0</b><span>等待審核</span></div>
-  <div class="stat"><b id="sDone">0</b><span>已完成</span></div>
-  <div class="stat" id="sDept" style="font-size:11px;color:var(--muted);line-height:1.5"></div>
-</div>
 <div id="hint">拖曳旋轉 · 滾輪縮放 · 點選房間飛行至該空間</div>
 <div id="modal" hidden></div>
 <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
@@ -610,7 +575,6 @@ function desk(x, z, staffId, room, o = {}) {
   if (o.tablet) { const t = box(0.5, 0.02, 0.32, MAT.black, -0.7, 0.79, 0.15, g); t.rotation.y = 0.2; }
   if (o.papers) { box(0.35, 0.01, 0.25, MAT.white, -0.9, 0.78, 0.1, g, false); box(0.3, 0.01, 0.22, MAT.white, -0.88, 0.79, 0.12, g, false).rotation.y = 0.3; }
   deskLamp(w / 2 - 0.2, 0.78, -0.3, room, g);
-  tag(g, { type: 'desk', id: staffId });
   DESKS[staffId] = { mats, x, z }; return g;
 }
 function shelf(x, z, w, yaw, h = 2.2) {
@@ -963,7 +927,6 @@ const FOUNT = { x: 0, z: 3, hx: 3.4, hz: 1.6 }; // central rectangular planter
   box(7.4, 3.2, 0.16, MAT.black, 0, 2.1, 0, g); [-3, 3].forEach((s) => box(0.12, 0.6, 0.5, MAT.black, s, 0.3, 0, g));
   const f = new THREE.Mesh(new THREE.PlaneGeometry(7.1, 2.95), mat); f.position.set(0, 2.1, -0.085); f.rotation.y = Math.PI; g.add(f);
   const b = new THREE.Mesh(new THREE.PlaneGeometry(7.1, 2.95), mat); b.position.set(0, 2.1, 0.085); g.add(b);
-  // lite version: control board is display-only (not clickable)
   rug(0, 3, 11, 6.2, MAT.carpet2);
   plant(-8.2, -1, 1.2); plant(8.2, -1, 1.2); plant(-8.2, 7.2, 1.1); plant(8.2, 7.2, 1.1); floorLamp(-5.5, 6.4, 'hub'); floorLamp(5.5, 6.4, 'hub');
 }
@@ -972,7 +935,7 @@ const kanbanTex = makeTex(1024, 512, () => {});
 {
   rug(-11, -6.2, 8.4, 4.6, MAT.carpet2);
   [[-14.4, 'p1'], [-11, 'p2'], [-7.6, 'p3']].forEach(([x, id]) => { desk(x, -8.2, id, 'plan', { w: 2.3, screens: [['doc', 0.85, 0.5]], papers: true }); chair(x, -6.9, 0, MAT.fabric2); });
-  const k = panel(-11, 1.55, -10.28, 4.8, 2.1, kanbanTex, 0, { stand: true }); /* lite: kanban display-only */
+  const k = panel(-11, 1.55, -10.28, 4.8, 2.1, kanbanTex, 0, { stand: true });
   const drawWB = (g, w, h) => {
     g.fillStyle = '#fdfdfb'; g.fillRect(0, 0, w, h);
     g.fillStyle = 'rgba(0,0,0,.035)'; for (let y = 0; y < h; y += 4) g.fillRect(0, y, w, 1); // faint board sheen
@@ -1059,7 +1022,7 @@ const kanbanTex = makeTex(1024, 512, () => {});
   const rb = makeTex(768, 330, (g, w, h) => { g.fillStyle = '#e9d7b8'; g.fillRect(0, 0, w, h);
     for (let i = 0; i < 9; i++) { g.fillStyle = ['#fbfbf8', '#f2d45c', '#a6d9a0', '#8bc4e8'][i % 4]; g.save(); g.translate(40 + (i % 5) * 140, 40 + Math.floor(i / 5) * 150); g.rotate((i % 3 - 1) * 0.05); g.fillRect(0, 0, 110, 120); g.fillStyle = '#76736a'; for (let k = 0; k < 5; k++) g.fillRect(10, 14 + k * 18, 90 - (k % 2) * 30, 5); g.restore(); }
     g.strokeStyle = '#c9694f'; g.lineWidth = 3; g.beginPath(); g.moveTo(100, 100); g.lineTo(240, 220); g.lineTo(380, 100); g.lineTo(520, 220); g.stroke(); });
-  panel(12.6, 1.5, -10.28, 3.8, 1.9, rb, 0, { stand: true }); // lite: research board display-only
+  panel(12.6, 1.5, -10.28, 3.8, 1.9, rb, 0, { stand: true });
   plant(15.2, -2.7, 1.2); plant(15.3, -9.9, 1.1); plant(6.7, -2.8, 1.0); floorLamp(11.8, -9.9, 'research'); floorLamp(8, -3, 'research');
 }
 
@@ -1290,19 +1253,18 @@ applyTime(TIME.h);
 const WALK = { fast: false };
 /* ---------- AI staff ---------- */
 const STAFF_DEF = [
-  { id: 'p1', name: '林企安', dept: 'plan', role: '企劃主責（企劃與內容整合）', skin: 0xf0c9a6, hair: 0x2e2420, style: 'bun', top: 0x7e9a8a, bottom: 0x4b4f57, seat: [-14.4, -6.95] },
-  { id: 'p2', name: '陳文心', dept: 'plan', role: '內容企劃', skin: 0xe6b894, hair: 0x6b4a32, style: 'long', top: 0xd9a066, bottom: 0x3d4350, seat: [-11, -6.95] },
-  { id: 'p3', name: '周立恆', dept: 'plan', role: '專案統籌', skin: 0xf3d2b3, hair: 0x1f1f22, style: 'short', top: 0x6a8fb5, bottom: 0x5b5a56, seat: [-7.6, -6.95] },
-  { id: 'd1', name: '蘇映彤', dept: 'design', role: '視覺設計師兼美術總監', skin: 0xf0c9a6, hair: 0x8a3b3b, style: 'bob', top: 0xc9694f, bottom: 0x2b2a27, seat: [-2.8, -6.95] },
-  { id: 'd2', name: '韓子墨', dept: 'design', role: '攝影師兼 Mockup 製作', skin: 0xd9a77f, hair: 0x2a2a2a, style: 'short', top: 0x3d4350, bottom: 0xb8956a, seat: [2.8, -6.95] },
-  { id: 'r1', name: '吳知遠', dept: 'research', role: '市場研究', skin: 0xe6b894, hair: 0x3a2d28, style: 'short', top: 0xe8d9b5, bottom: 0x4f6a5a, seat: [10, -6.95] },
-  { id: 'r2', name: '鄭資晴', dept: 'research', role: '資料分析', skin: 0xf3d2b3, hair: 0x20262e, style: 'long', top: 0x8ab4c2, bottom: 0x3d4350, seat: [14, -6.95] },
+  { id: 'p1', name: '', dept: 'plan', role: '企劃主責（企劃與內容整合）', skin: 0xf0c9a6, hair: 0x2e2420, style: 'bun', top: 0x7e9a8a, bottom: 0x4b4f57, seat: [-14.4, -6.95] },
+  { id: 'p2', name: '', dept: 'plan', role: '內容企劃', skin: 0xe6b894, hair: 0x6b4a32, style: 'long', top: 0xd9a066, bottom: 0x3d4350, seat: [-11, -6.95] },
+  { id: 'p3', name: '', dept: 'plan', role: '專案統籌', skin: 0xf3d2b3, hair: 0x1f1f22, style: 'short', top: 0x6a8fb5, bottom: 0x5b5a56, seat: [-7.6, -6.95] },
+  { id: 'd1', name: '', dept: 'design', role: '視覺設計師兼美術總監', skin: 0xf0c9a6, hair: 0x8a3b3b, style: 'bob', top: 0xc9694f, bottom: 0x2b2a27, seat: [-2.8, -6.95] },
+  { id: 'd2', name: '', dept: 'design', role: '攝影師兼 Mockup 製作', skin: 0xd9a77f, hair: 0x2a2a2a, style: 'short', top: 0x3d4350, bottom: 0xb8956a, seat: [2.8, -6.95] },
+  { id: 'r1', name: '', dept: 'research', role: '市場研究', skin: 0xe6b894, hair: 0x3a2d28, style: 'short', top: 0xe8d9b5, bottom: 0x4f6a5a, seat: [10, -6.95] },
+  { id: 'r2', name: '', dept: 'research', role: '資料分析', skin: 0xf3d2b3, hair: 0x20262e, style: 'long', top: 0x8ab4c2, bottom: 0x3d4350, seat: [14, -6.95] },
 ];
 const DEPT_NAME = { plan: '企劃部', design: '設計部', research: '研究部' };
-const ACT_LABEL = { meet: '開會中', work: '工作中', think: '思考中', talk: '討論中', wait: '等待審核', rest: '休息中', idle: '待命', done: '完成任務' };
+const ACT_LABEL = { work: '工作中', think: '思考中', talk: '討論中', rest: '休息中', idle: '待命' };
 
 const STAFF = {};
-const MEET = { on: false, topic: '', until: 0 };
 const LOUNGE_SPOTS = [
   { x: -15.1, z: 6.35, yaw: Math.PI, pose: 'sit' }, { x: -13.5, z: 6.35, yaw: Math.PI, pose: 'sit' },
   { x: -18.2, z: 4.9, yaw: Math.PI / 2, pose: 'sit' }, { x: -10.75, z: 4.9, yaw: -Math.PI / 2, pose: 'sit' },
@@ -1312,7 +1274,6 @@ const LOUNGE_SPOTS = [
   { x: 11.0, z: 10.3, yaw: 0, pose: 'sit', patio: true }, { x: 11.8, z: 10.3, yaw: 0, pose: 'sit', patio: true }, { x: 14.2, z: 10.3, yaw: 0, pose: 'sit', patio: true }, { x: 15.0, z: 10.3, yaw: 0, pose: 'sit', patio: true },
   { x: -7.1, z: 11.95, yaw: Math.PI, pose: 'sit' }, { x: -5.9, z: 11.95, yaw: Math.PI, pose: 'sit' },
 ];
-const MEET_SPOTS = [0, 1, 2, 3, 4].map((k) => ({ x: -2.4 + k * 1.2, z: 1.15, yaw: 0, pose: 'sit', back: true })).concat([{ x: -3.75, z: 3, yaw: Math.PI / 2, pose: 'sit', back: true }, { x: 3.75, z: 3, yaw: -Math.PI / 2, pose: 'sit', back: true }]); // 5 along the south side, one at each end
 function seatH(x, z) { // seat-top height under a sitting spot
   if (x > 9 && z > 9 && z < 11.5) return 0.47;           // park benches
   if (x > -8 && x < -5 && z > 11 && z < 13) return 0.57; // reception sofa
@@ -1393,7 +1354,6 @@ function makeBubble() {
 function pickThought(s) {
   const pick = (a) => a[Math.floor(Math.random() * a.length)];
   if (s.pose === 'lift' && Math.random() < 0.7) return pick(THOUGHTS.gym);
-  if (MEET.on && s.act === 'meet' && Math.random() < 0.75) { const T = MEET.topic.slice(0, 8); return pick(['關於「' + T + '」我有想法', '「' + T + '」時程可行嗎？', '「' + T + '」先確認預算', '「' + T + '」再收斂一下']); }
   const r = Math.random();
   return r < 0.28 ? pick(THOUGHTS.office) : r < 0.5 ? pick(THOUGHTS.design.concat(THOUGHTS.dept[s.dept])) : pick(THOUGHTS.hobby[s.id]);
 }
@@ -1408,7 +1368,7 @@ STAFF_DEF.forEach((d) => {
   s.pos = new THREE.Vector3(d.seat[0], 0, d.seat[1]); s.yaw = Math.PI; s.path = []; s.pose = 'sit'; s.act = 'idle'; s.target = null; s.atDesk = true;
   s.walkT = Math.random() * 6; s.idleFor = 4 + Math.random() * 10; s.restUntil = 0; s.talkUntil = 0; s.label = labelSprite(d.name); s.root.add(s.label); s.bub = makeBubble(); s.root.add(s.bub.sp);
   s.lastLabel = ''; s.cur = { sit: 1, armsF: 0, think: 0, talk: 0, cheer: 0, stretch: 0, lift: 0 }; s.log = []; s.partner = null;
-  STAFF[d.id] = s; // lite: people are not clickable
+  STAFF[d.id] = s;
   s.root.position.copy(s.pos); s.root.rotation.y = s.yaw;
 });
 function slog(s, text) { const t = String(Math.floor(TIME.hh ?? 8)).padStart(2, '0') + ':' + String(Math.floor(((TIME.hh ?? 0) % 1) * 60)).padStart(2, '0'); s.log.unshift({ t, text }); if (s.log.length > 30) s.log.pop(); }
@@ -1430,7 +1390,7 @@ function goLounge(s) {
   s.spot = i; const sp = LOUNGE_SPOTS[i]; s.atDeskTarget = false; routeTo(s, sp.x, sp.z, sp.yaw, sp.pose, !!sp.back);
   slog(s, sp.pose === 'lift' ? '前往健身區舉啞鈴' : sp.patio ? '前往戶外休息區' : '前往公共休息室');
 }
-function goMeet(s, partner) {
+function goChat(s, partner) {
   s.atDeskTarget = false; s.partner = partner.id; routeTo(s, partner.seat[0] + 1.25, partner.seat[1] - 0.2, -Math.PI / 2, 'stand', false);
 }
 
@@ -1453,7 +1413,7 @@ function animateStaff(s, dt, time) {
   const walking = s.path.length > 0;
   const sitting = !walking && s.pose === 'sit';
   const act = s.act;
-  const tg = { sit: sitting ? 1 : 0, think: !walking && act === 'think' ? 1 : 0, talk: !walking && (act === 'talk' || act === 'meet') ? 1 : 0, cheer: !walking && act === 'done' ? 1 : 0, stretch: !walking && s.pose === 'stretch' ? 1 : 0, lift: !walking && s.pose === 'lift' ? 1 : 0, armsF: !walking && (act === 'work') && sitting ? 1 : 0 };
+  const tg = { sit: sitting ? 1 : 0, think: !walking && act === 'think' ? 1 : 0, talk: !walking && act === 'talk' ? 1 : 0, cheer: 0, stretch: !walking && s.pose === 'stretch' ? 1 : 0, lift: !walking && s.pose === 'lift' ? 1 : 0, armsF: !walking && (act === 'work') && sitting ? 1 : 0 };
   lerpPose(s.cur, tg, Math.min(1, dt * 7)); s.cur.sit = tg.sit; // sitting down / standing up switches instantly, no blend
   const c = s.cur, w = walking ? 1 : 0, sw = Math.sin(s.walkT) * 0.7 * w;
   const SH = s.sitH || 0.54, HS = SH + 0.06, TH = Math.PI / 2 + Math.asin(Math.max(-1, Math.min(1, (0.585 - HS) / 0.5))); // thigh angle so the sole lands on the floor
@@ -1473,7 +1433,7 @@ function animateStaff(s, dt, time) {
   s.root.position.set(s.pos.x, c.cheer * Math.abs(Math.sin(time * 6)) * 0.12, s.pos.z); s.root.rotation.y = s.yaw;
   const lab = walking ? (s.heading || ACT_LABEL[act]) : (s.pose === 'lift' && act === 'rest' ? '健身中' : ACT_LABEL[act]);
   updateBubble(s, time, dt);
-  const key = s.name + lab; if (key !== s.lastLabel) { s.label.userData.draw((s.role || s.name).split(/[（(]/)[0].split('兼')[0].trim(), lab, act === 'wait'); s.lastLabel = key; }
+  const key = s.name + lab; if (key !== s.lastLabel) { s.label.userData.draw(s.name, lab, false); s.lastLabel = key; }
   // desk monitor glow
   const dk = DESKS[s.id]; if (dk) dk.mats.forEach((m) => { m.emissiveIntensity += (((s.atDesk && (act === 'work' || act === 'think')) ? 0.95 : 0.3) - m.emissiveIntensity) * 0.05; });
 }
@@ -1486,21 +1446,13 @@ function onArrive(s) {
   }
 }
 
-/* ---------- editable names ---------- */
-let SAVED_NAMES = {}; try { SAVED_NAMES = JSON.parse(localStorage.getItem('aio-names') || '{}') || {}; } catch (e) { SAVED_NAMES = {}; }
-Object.values(STAFF).forEach((s) => { if (SAVED_NAMES[s.id]) s.name = String(SAVED_NAMES[s.id]).slice(0, 8); });
-function renameStaff(id, name) {
-  name = String(name).trim().slice(0, 8); if (!name) return;
-  const o = id === 'rc' ? RECEP : STAFF[id]; o.name = name; o.lastLabel = ''; SAVED_NAMES[id] = name;
-  try { localStorage.setItem('aio-names', JSON.stringify(SAVED_NAMES)); } catch (e) { /* ignore */ }
-}
+Object.values(STAFF).forEach((s) => { s.name = String(s.role).split(/[（(]/)[0].split('兼')[0].trim(); });
 
 /* ---------- receptionist ---------- */
 const RECEP = { id: 'rc', name: '接待員', role: '接待員' };
 {
   const ch = makeChar({ skin: 0xf0c9a6, hair: 0x4a3326, style: 'bob', top: 0x3f7d5a, bottom: 0x2b2a27 }); Object.assign(RECEP, ch);
   RECEP.root.position.set(4.5, 0, 12.45); RECEP.root.rotation.y = Math.PI; RECEP.label = labelSprite(''); RECEP.root.add(RECEP.label); RECEP.lastLabel = '';
-  if (SAVED_NAMES.rc) RECEP.name = String(SAVED_NAMES.rc).slice(0, 8);
   tag(RECEP.root, { type: 'recep', id: 'rc' });
 }
 function animateRecep(time) {
@@ -1509,241 +1461,76 @@ function animateRecep(time) {
   r.head.rotation.y = Math.sin(time * 0.5) * 0.35;
   r.armL.rotation.x = -0.15; r.armL.rotation.z = -0.1;
   r.armR.rotation.x = wave ? -0.3 : -0.15; r.armR.rotation.z = wave ? 2.5 + Math.sin(time * 9) * 0.25 : 0.1;
-  const key = r.name + '|'; if (key !== r.lastLabel) { r.label.userData.draw(r.role || r.name, '歡迎光臨', false); r.lastLabel = key; }
+  const key = r.name + '|'; if (key !== r.lastLabel) { r.label.userData.draw(r.name, '歡迎光臨', false); r.lastLabel = key; }
 }
-/* ---------- tasks (state machine) ---------- */
-const STAGES = ['待處理', '分析中', '企劃中', '等待 CEO 審核', '執行中', '品質檢查中', '等待最終確認', '已完成'];
-const AUTO_DUR = { 0: 4, 1: 12, 2: 16, 4: 18, 5: 10 };
-const TASKS = []; let taskSeq = 0;
+/* ---------- staff scheduler ---------- */
 const nowStr = () => String(Math.floor(TIME.hh ?? 8)).padStart(2, '0') + ':' + String(Math.floor(((TIME.hh ?? 0) % 1) * 60)).padStart(2, '0');
-function tlog(t, text) { t.log.unshift({ t: nowStr(), text }); if (t.log.length > 40) t.log.pop(); }
-function addTask(title, research, stage = 0, prog = 0) {
-  const t = { id: ++taskSeq, title, research: !!research, stage, prog, log: [], meetT: 8 + Math.random() * 8, doneAt: 0 };
-  tlog(t, 'CEO 指派任務' + (research ? '（含研究部調查）' : '')); if (stage > 0) tlog(t, '進入「' + STAGES[stage] + '」');
-  TASKS.push(t); return t;
-}
-const overall = (t) => Math.min(1, (t.stage + (t.stage === 7 ? 0 : t.prog)) / 7);
-function advance(t, to, note) { t.stage = to; t.prog = 0; tlog(t, note || '進入「' + STAGES[to] + '」'); if (to === 7) t.doneAt = performance.now(); markDirty(); }
-function approve(t) { // CEO gates: only here can planning move on to design / final delivery
-  if (t.stage === 3) { advance(t, 4, 'CEO 核准企劃案，交由設計部執行'); } else if (t.stage === 6) { advance(t, 7, 'CEO 最終確認，完成交付'); }
-}
-function reject(t) { if (t.stage === 3) advance(t, 2, 'CEO 退回企劃案，請企劃部修改'); else if (t.stage === 6) advance(t, 4, 'CEO 退回成果，設計部重新執行'); }
-function assignments() {
-  const out = {}; const set = (id, act, t) => { if (!out[id] || (out[id].act === 'wait' && act !== 'wait')) out[id] = { act, task: t }; };
-  for (const t of TASKS) {
-    switch (t.stage) {
-      case 1: if (t.research) { set('r1', 'work', t); set('r2', 'work', t); set('p1', 'think', t); } else { set('p1', 'think', t); set('p3', 'work', t); } break;
-      case 2: set('p1', 'work', t); set('p2', 'work', t); set('p3', 'think', t); break;
-      case 3: set('p1', 'wait', t); set('p2', 'wait', t); break;
-      case 4: set('d1', 'work', t); set('d2', 'work', t); break;
-      case 5: set('d1', 'think', t); set('d2', 'work', t); break;
-      case 6: set('d1', 'wait', t); set('d2', 'wait', t); break;
-      case 7: if (performance.now() - t.doneAt < 9000) { set('d1', 'done', t); set('d2', 'done', t); } break;
-    }
-  }
-  return out;
-}
-let ASSIGN = {}, dirty = true; const markDirty = () => { dirty = true; };
-function tickTasks(dt) {
-  const spd = 1;
-  for (const t of TASKS) {
-    if (!(t.stage in AUTO_DUR)) continue;
-    const dur = AUTO_DUR[t.stage] + (t.stage === 1 && t.research ? 8 : 0);
-    const ppl = Object.entries(ASSIGN).filter(([, a]) => a.task === t).map(([id]) => STAFF[id]);
-    const working = t.stage === 0 ? 1 : ppl.filter((s) => s.atDesk && (s.act === 'work' || s.act === 'think')).length / Math.max(1, ppl.length);
-    t.prog += dt / dur * (0.15 + 0.85 * working) * Math.min(spd, 2);
-    if (t.prog >= 1) {
-      if (t.stage === 0) advance(t, 1, '企劃部接收任務，開始分析需求' + (t.research ? '，研究部同步調查' : ''));
-      else if (t.stage === 1) advance(t, 2, '需求分析完成，開始企劃與內容整合');
-      else if (t.stage === 2) advance(t, 3, '企劃案完成，提交 CEO 審核');
-      else if (t.stage === 4) advance(t, 5, '設計成果完成，交由美術總監檢查');
-      else if (t.stage === 5) advance(t, 6, '美術總監檢查通過，提交 CEO 最終確認');
-    }
-  }
-  // collaboration meetings
-  const now = performance.now(); if (MEET.on) return;
-  for (const t of TASKS) {
-    if (![1, 2, 4, 5].includes(t.stage)) continue; t.meetT -= dt; if (t.meetT > 0) continue; t.meetT = 18 + Math.random() * 12;
-    const ppl = Object.entries(ASSIGN).filter(([, a]) => a.task === t).map(([id]) => STAFF[id]).filter((s) => s.atDesk && !s.path.length && s.talkUntil < now);
-    if (ppl.length >= 2) { const a = ppl[0], b = ppl[1]; goMeet(a, b); a.heading = '前往討論'; markDirty(); }
-  }
-}
+let chatT = 14;
 function tickStaff(dt) {
   const now = performance.now();
+  chatT -= dt;
+  if (chatT <= 0) {
+    chatT = 18 + Math.random() * 14;
+    const ppl = Object.values(STAFF).filter((s) => s.atDesk && !s.path.length && s.talkUntil < now);
+    if (ppl.length >= 2) { const i = Math.floor(Math.random() * ppl.length); const a = ppl[i]; const b = ppl[(i + 1 + Math.floor(Math.random() * (ppl.length - 1))) % ppl.length]; goChat(a, b); a.heading = '前往討論'; }
+  }
   for (const id in STAFF) {
-    const s = STAFF[id], a = ASSIGN[id]; s.task = a ? a.task : null;
-    if (MEET.on) { s.talkMode = false; s.talkUntil = 0; s.partner = null; s.act = (!s.path.length && s.pendingSit == null && s.pose === 'sit' && s.target && s.target.meet) ? 'meet' : 'idle'; s.prog = a && a.task ? overall(a.task) : 0; s.partnerName = null; continue; }
-    if (s.talkUntil && now > s.talkUntil) { // end meeting
-      s.talkUntil = 0; s.talkMode = false; if (s.partner) { s.partner = null; goDesk(s); s.heading = '返回座位'; } markDirty();
-    }
+    const s = STAFF[id];
+    if (s.talkUntil && now > s.talkUntil) { s.talkUntil = 0; s.talkMode = false; if (s.partner) { s.partner = null; goDesk(s); s.heading = '返回座位'; } }
     const inLounge = s.spot != null && !s.path.length;
-    let act = a ? a.act : 'idle';
+    let act = s.atDesk ? ((s.thinkUntil || 0) > now ? 'think' : 'work') : 'idle';
     if (s.talkMode && s.talkUntil) act = 'talk';
     else if (inLounge) act = 'rest';
-    // behavior
     if (!s.path.length && !s.talkMode) {
-      if (inLounge) { if (((a && a.act !== 'wait') && now > (s.holdUntil || 0)) || now > s.restUntil) { goDesk(s); s.heading = '返回座位'; } }
+      if (inLounge) { if (now > s.restUntil) { goDesk(s); s.heading = '返回座位'; } }
       else if (s.atDesk) {
-        if (act === 'wait') { s.waitFor = (s.waitFor || 0) + dt; if (s.waitFor > 5) { s.waitFor = 0; s.restUntil = now + 16000; goLounge(s); s.heading = '前往休息室'; } }
-        else if (act === 'idle') { s.idleFor -= dt * (TIME.d < 0.3 ? 2.5 : 1); if (s.idleFor < 0) { s.idleFor = 14 + Math.random() * 14; s.restUntil = now + 14000 + Math.random() * 10000; goLounge(s); s.heading = '前往休息室'; } }
-        else { s.waitFor = 0; s.idleFor = 10 + Math.random() * 10; }
+        if (act !== 'think' && Math.random() < dt * 0.04) s.thinkUntil = now + 4000 + Math.random() * 4000;
+        s.idleFor -= dt * (TIME.d < 0.3 ? 2.5 : 1);
+        if (s.idleFor < 0) { s.idleFor = 35 + Math.random() * 35; s.restUntil = now + 14000 + Math.random() * 10000; goLounge(s); s.heading = '前往休息室'; }
       } else if (!s.atDesk && !inLounge && !s.moving) goDesk(s);
     }
-    s.act = act; s.prog = a && a.task ? overall(a.task) : 0;
+    s.act = act;
     s.partnerName = s.partner ? STAFF[s.partner].name : null;
   }
-}
-
-/* ---------- meeting at the central table ---------- */
-const meetSign = (() => { const c = document.createElement('canvas'); c.width = 768; c.height = 160; const t = new THREE.CanvasTexture(c);
-  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthTest: false })); sp.scale.set(4.8, 1.0, 1); sp.position.set(0, 2.15, 3); sp.renderOrder = 12; sp.visible = false; sp.raycast = function () {}; scene.add(sp);
-  sp.userData.draw = (txt) => { const g = c.getContext('2d'); g.clearRect(0, 0, 768, 160); rr(g, 8, 20, 752, 120, 40); g.fillStyle = 'rgba(30,31,33,.86)'; g.fill(); g.textAlign = 'center';
-    g.fillStyle = '#e8a84a'; g.font = '500 30px "Noto Sans TC",sans-serif'; g.fillText('會議進行中', 384, 66); g.fillStyle = '#fff'; g.font = '700 42px "Noto Sans TC",sans-serif'; g.fillText(txt.slice(0, 18), 384, 118); t.needsUpdate = true; };
-  return sp; })();
-function startMeeting(topic) {
-  MEET.on = true; MEET.topic = (topic || '').trim() || '臨時會議'; MEET.until = 0; meetSign.userData.draw(MEET.topic); meetSign.visible = true;
-  Object.values(STAFF).forEach((s, k) => { const sp = MEET_SPOTS[k]; s.spot = null; s.holdUntil = s.restUntil = 0; s.atDeskTarget = false; routeTo(s, sp.x, sp.z, sp.yaw, 'sit', true); s.target.meet = true; s.heading = '前往會議桌'; slog(s, '前往會議桌開會：' + MEET.topic); });
-  markDirty();
-}
-function endMeeting() {
-  MEET.on = false; meetSign.visible = false;
-  Object.values(STAFF).forEach((s) => { s.atDeskTarget = false; goDesk(s); s.heading = '返回座位'; slog(s, '會議結束：' + MEET.topic); }); markDirty();
-}
-function tickMeeting() {
-  const now = performance.now(), btn = $('#mtGo'), want = MEET.on ? '結束會議' : '開會'; if (btn.textContent !== want) btn.textContent = want;
-  if (!MEET.on) return;
-  if (!MEET.until && Object.values(STAFF).every((s) => s.act === 'meet')) MEET.until = now + 60000;
-  if (MEET.until && now > MEET.until) endMeeting();
 }
 
 /* ---------- boards drawn on canvas ---------- */
 const FONT = '"Noto Sans TC",sans-serif';
 function drawDash() {
   const g = dashTex._g, w = 1024, h = 460; g.fillStyle = '#1c2427'; g.fillRect(0, 0, w, h);
-  g.fillStyle = '#e9e6dd'; g.font = '700 34px ' + FONT; g.textAlign = 'left'; g.fillText('AI OFFICE 任務總控', 28, 52);
+  g.fillStyle = '#e9e6dd'; g.font = '700 34px ' + FONT; g.textAlign = 'left'; g.fillText('AI OFFICE', 28, 52);
   g.textAlign = 'right'; g.font = '500 34px "DM Mono",monospace'; g.fillStyle = '#e8a84a'; g.fillText($('#clk').textContent, w - 28, 52); g.textAlign = 'left';
-  const st = stats(); const items = [['總任務', st.total, '#e9e6dd'], ['進行中', st.run, '#6bbf93'], ['等待審核', st.wait, '#e8a84a'], ['已完成', st.done, '#8ab4f8']];
-  items.forEach(([l, v, c], i) => { const x = 28 + i * 242; rr(g, x, 76, 224, 92, 14); g.fillStyle = '#263135'; g.fill(); g.fillStyle = c; g.font = '500 46px "DM Mono",monospace'; g.fillText(v, x + 18, 128); g.fillStyle = '#9aa5a8'; g.font = '500 20px ' + FONT; g.fillText(l, x + 18, 156); });
-  let y = 196; g.font = '700 20px ' + FONT; g.fillStyle = '#9aa5a8'; g.fillText('員工狀態', 28, y);
-  Object.values(STAFF).forEach((s, i) => { const col = i % 4, row = Math.floor(i / 4), x = 28 + col * 242, yy = 214 + row * 56; rr(g, x, yy, 228, 46, 10); g.fillStyle = '#263135'; g.fill();
-    g.fillStyle = s.act === 'wait' ? '#e8a84a' : (s.act === 'rest' || s.act === 'idle') ? '#7b8a8d' : '#6bbf93'; g.beginPath(); g.arc(x + 20, yy + 23, 6, 0, 6.3); g.fill();
-    g.fillStyle = '#e9e6dd'; g.font = '500 20px ' + FONT; g.fillText(s.name, x + 36, yy + 21); g.fillStyle = '#9aa5a8'; g.font = '16px ' + FONT; g.fillText(ACT_LABEL[s.act] + ' · ' + DEPT_NAME[s.dept], x + 36, yy + 40); });
-  y = 340; g.font = '700 20px ' + FONT; g.fillStyle = '#9aa5a8'; g.fillText('進行中任務', 28, y);
-  TASKS.filter((t) => t.stage < 7).slice(0, 3).forEach((t, i) => { const yy = y + 16 + i * 34; g.fillStyle = '#e9e6dd'; g.font = '500 19px ' + FONT; g.fillText(t.title.slice(0, 14), 28, yy + 16); g.fillStyle = (t.stage === 3 || t.stage === 6) ? '#e8a84a' : '#9aa5a8'; g.font = '16px ' + FONT; g.fillText(STAGES[t.stage], 270, yy + 16);
-    g.fillStyle = '#35444a'; rr(g, 470, yy + 4, 520, 12, 6); g.fill(); g.fillStyle = '#6bbf93'; rr(g, 470, yy + 4, Math.max(12, 520 * overall(t)), 12, 6); g.fill(); });
+  let y = 100; g.font = '700 20px ' + FONT; g.fillStyle = '#9aa5a8'; g.fillText('員工狀態', 28, y);
+  Object.values(STAFF).forEach((s, i) => { const col = i % 4, row = Math.floor(i / 4), x = 28 + col * 242, yy = 122 + row * 78; rr(g, x, yy, 228, 64, 12); g.fillStyle = '#263135'; g.fill();
+    g.fillStyle = (s.act === 'rest' || s.act === 'idle') ? '#7b8a8d' : '#6bbf93'; g.beginPath(); g.arc(x + 22, yy + 32, 7, 0, 6.3); g.fill();
+    g.fillStyle = '#e9e6dd'; g.font = '500 22px ' + FONT; g.fillText(s.name, x + 40, yy + 29); g.fillStyle = '#9aa5a8'; g.font = '17px ' + FONT; g.fillText(ACT_LABEL[s.act] + ' · ' + DEPT_NAME[s.dept], x + 40, yy + 52); });
   dashTex.needsUpdate = true;
 }
 function drawKanban() {
   const g = kanbanTex._g, w = 1024, h = 512; g.fillStyle = '#f4f0e6'; g.fillRect(0, 0, w, h);
-  const cols = [['規劃', [0, 1, 2]], ['CEO 審核', [3]], ['設計執行', [4, 5]], ['交付', [6, 7]]];
-  cols.forEach(([name, ss], i) => { const x = 16 + i * 250; g.fillStyle = '#e3dccb'; rr(g, x, 16, 236, 480, 14); g.fill(); g.fillStyle = '#2b2a27'; g.font = '700 26px ' + FONT; g.fillText(name, x + 16, 52);
-    TASKS.filter((t) => ss.includes(t.stage)).slice(0, 4).forEach((t, j) => { const y = 68 + j * 106; g.fillStyle = '#fffdf8'; rr(g, x + 10, y, 216, 96, 10); g.fill();
-      g.fillStyle = (t.stage === 3 || t.stage === 6) ? '#d9902f' : t.stage === 7 ? '#3f7d5a' : '#6a9fb5'; g.fillRect(x + 10, y + 12, 5, 72);
-      g.fillStyle = '#2b2a27'; g.font = '500 20px ' + FONT; g.fillText(t.title.slice(0, 10), x + 26, y + 32); g.fillStyle = '#76736a'; g.font = '16px ' + FONT; g.fillText(STAGES[t.stage], x + 26, y + 56);
-      g.fillStyle = '#e3dccb'; rr(g, x + 26, y + 70, 180, 9, 4); g.fill(); g.fillStyle = '#3f7d5a'; rr(g, x + 26, y + 70, Math.max(9, 180 * overall(t)), 9, 4); g.fill(); }); });
+  const cols = [['待辦', 3], ['進行中', 2], ['完成', 3]], note = ['#f2d57a', '#9fd0b3', '#a9c8e6', '#f0b3a6'];
+  cols.forEach(([name, n], i) => { const x = 16 + i * 330; g.fillStyle = '#e3dccb'; rr(g, x, 16, 316, 480, 14); g.fill(); g.fillStyle = '#2b2a27'; g.font = '700 28px ' + FONT; g.fillText(name, x + 18, 54);
+    for (let j = 0; j < n; j++) { const y = 74 + j * 138; g.fillStyle = note[(i + j) % 4]; rr(g, x + 14, y, 288, 120, 8); g.fill(); g.fillStyle = 'rgba(43,42,39,.28)'; [28, 56, 84].forEach((o, k) => rr(g, x + 30, y + o, k === 2 ? 140 : 240, 9, 4) || g.fill()); } });
   kanbanTex.needsUpdate = true;
 }
-function stats() { return { total: TASKS.length, run: TASKS.filter((t) => [0, 1, 2, 4, 5].includes(t.stage)).length, wait: TASKS.filter((t) => t.stage === 3 || t.stage === 6).length, done: TASKS.filter((t) => t.stage === 7).length }; }
 
 /* ---------- UI ---------- */
 function h(tag, attrs, ...kids) { const e = document.createElement(tag); for (const k in (attrs || {})) { if (k === 'class') e.className = attrs[k]; else if (k.startsWith('on')) e.addEventListener(k.slice(2), attrs[k]); else e.setAttribute(k, attrs[k]); }
   kids.flat().forEach((c) => c != null && e.append(c.nodeType ? c : document.createTextNode(c))); return e; }
 let sel = null; // {type, id}
-function stepsBar(t) { return h('div', { class: 'steps' }, STAGES.map((_, i) => h('i', { class: i < t.stage ? 'd' : i === t.stage ? 'c' : '' }))); }
-function taskCard(t, dept) {
-  const wait = t.stage === 3 || t.stage === 6;
-  const who = Object.entries(ASSIGN).filter(([, a]) => a.task === t).map(([id]) => STAFF[id].name).join('、');
-  return h('div', { class: 'card' },
-    h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('b', null, t.title), h('span', { class: 'pill ' + (wait ? 'wait' : t.stage === 7 ? 'done' : '') }, STAGES[t.stage])),
-    stepsBar(t), h('div', { class: 'bar' }, h('i', { style: 'width:' + Math.round(overall(t) * 100) + '%' })),
-    h('div', { style: 'font-size:11px;color:var(--muted)' }, '負責：' + (who || '—') + ' · 進度 ' + Math.round(overall(t) * 100) + '%'),
-    wait ? h('div', { class: 'row' }, h('button', { class: 'primary', onclick: () => openReview(t) }, '查看審核資料'), h('span', { style: 'font-size:11px;color:var(--muted)' }, '看過資料後才能核准或退回')) : null,
-    dept ? null : null);
-}
-/* ---------- CEO review screen: the material to look at before approving or sending back ---------- */
-function hashStr(s) { let x = 7; for (let i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) >>> 0; return x; }
-const PALETTES = [['#e8a84a', '#3f7d5a', '#f4f0e6'], ['#c9694f', '#6a9fb5', '#fffdf8'], ['#7e9a8a', '#d9a066', '#2b2a27'], ['#8ab4c2', '#c8236b', '#f1ebdf'], ['#d6a1ae', '#4f6a5a', '#fafafa']];
-function reviewData(t) {
-  const k = hashStr(t.title + t.id), pick = (a, o = 0) => a[(k + o) % a.length], pal = PALETTES[k % PALETTES.length];
-  const aud = pick(['25–34 歲都會上班族', '30–45 歲親子家庭', '18–24 歲大學生與新鮮人', '中小企業採購決策者'], 1), tone = pick(['溫暖親切', '俐落專業', '輕鬆有趣', '質感沉穩'], 2);
-  const big = moldBest(S_PRINT.w + 2 * S_PRINT.b, S_PRINT.h + 2 * S_PRINT.b).win;
-  return { pal, aud, tone, big };
-}
-const S_PRINT = { w: 180, h: 240, b: 3 }; // example print piece (mm) used in the sample material
-function swatch(c) { return h('i', { style: 'display:inline-block;width:18px;height:18px;border-radius:5px;background:' + c + ';border:1px solid var(--line);margin-right:4px;vertical-align:-4px' }); }
-function openReview(t) {
-  const d = reviewData(t), plan = t.stage === 3, m = $('#modal'); m.hidden = false; m.replaceChildren();
-  const sec = (title, ...kids) => h('div', { style: 'border-top:1px solid var(--line);padding-top:8px' }, h('div', { style: 'font-size:12px;color:var(--muted);margin-bottom:4px' }, title), ...kids);
-  const ul = (items) => h('ul', { style: 'margin:0;padding-left:18px;line-height:1.7' }, items.map((x) => h('li', null, x)));
-  const body = [];
-  if (plan) {
-    body.push(sec('提案人', h('div', null, '林企安（企劃主責）、陳文心（內容企劃）、周立恆（專案統籌）')),
-      sec('專案目標', h('div', null, '為「' + t.title + '」建立一致的視覺與內容方向，並在期限內完成設計交付。')),
-      sec('目標受眾與調性', h('div', null, d.aud + ' ／ 調性：' + d.tone)),
-      sec('策略重點', ul(['一句話主訴求：讓受眾 3 秒內看懂「' + t.title + '」', '主視覺先行，社群、印刷與簡報沿用同一套視覺', t.research ? '採用研究部的市場與案例調查結果作為依據' : '本案未啟用研究部調查，以既有品牌資料為準'])),
-      sec('建議配色', h('div', null, d.pal.map(swatch))),
-      sec('交付項目與印刷規格', ul(['主視覺 KV 一式', '社群圖組 3 張（1080×1080）', '印刷品：成品 ' + S_PRINT.w / 10 + '×' + S_PRINT.h / 10 + ' cm，含出血 ' + S_PRINT.b + ' mm → ' + d.big.n + ' 模（' + d.big.name + '）'])),
-      sec('時程與資源', h('div', null, '設計執行約 5 個工作天，設計部 2 人；研究部' + (t.research ? '已完成調查' : '不需支援') + '。')));
-  } else {
-    body.push(sec('成果預覽', h('div', { style: 'height:150px;border-radius:10px;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:linear-gradient(135deg,' + d.pal[0] + ',' + d.pal[1] + ');color:' + d.pal[2] + ';text-align:center;padding:10px' }, h('div', { style: 'font-size:22px;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.25)' }, t.title), h('div', { style: 'font-size:12px;opacity:.9' }, '主視覺示意 · ' + d.tone))),
-      sec('配色', h('div', null, d.pal.map(swatch))),
-      sec('交付物清單', ul(['主視覺 KV（含 Mockup 擬真圖 2 張）', '社群圖組 3 張', '印刷檔：' + S_PRINT.w / 10 + '×' + S_PRINT.h / 10 + ' cm，含出血 ' + S_PRINT.b + ' mm，' + d.big.n + ' 模'])),
-      sec('美術總監檢查結果', ul(['✓ 色彩與品牌色一致', '✓ 出血 ' + S_PRINT.b + ' mm、裁切線已加', '✓ 圖片解析度 300 dpi', '✓ 字體皆為可商用授權'])),
-      sec('設計師備註', h('div', null, '依企劃案完成；若要調整色調，退回後設計部會重新執行。')));
-  }
-  const close = () => { m.hidden = true; };
-  m.append(h('div', { class: 'box', style: 'width:min(520px,100%);max-height:88vh;overflow:auto' },
-    h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('b', { style: 'font-size:16px' }, (plan ? '企劃案審核：' : '成果最終確認：') + t.title), h('span', { class: 'pill wait' }, STAGES[t.stage])),
-    h('div', { style: 'font-size:11px;color:var(--muted)' }, '以下為依任務名稱產生的示意審核內容（模擬資料，非真實檔案）。'),
-    ...body,
-    h('div', { class: 'row', style: 'margin-top:4px' },
-      h('button', { class: 'primary', onclick: () => { approve(t); close(); renderInspect(true); } }, plan ? '核准企劃' : '最終確認'),
-      h('button', { class: 'ghost', onclick: () => { reject(t); close(); renderInspect(true); } }, '退回'),
-      h('button', { class: 'ghost', onclick: close }, '稍後再決定'))));
-}
-const firstPending = () => TASKS.find((t) => t.stage === 3 || t.stage === 6);
 function renderInspect(force) {
   const box = $('#inspect'); if (!sel) return; box.replaceChildren();
-  if (sel.type === 'staff') {
-    const s = STAFF[sel.id], t = s.task;
-    box.append(h('h3', null, '員工資訊'), nameEdit(s.id, s.name), h('div', { class: 'card' },
-      h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('b', { style: 'font-size:16px' }, s.name), h('span', { class: 'pill ' + (s.act === 'wait' ? 'wait' : s.act === 'done' ? 'done' : '') }, ACT_LABEL[s.act])),
-      h('div', { style: 'color:var(--muted)' }, DEPT_NAME[s.dept] + ' · ' + s.role),
-      h('div', null, '目前任務：' + (t ? t.title : '無（待命）')), t ? h('div', { class: 'bar' }, h('i', { style: 'width:' + Math.round(overall(t) * 100) + '%' })) : null,
-      h('div', { style: 'font-size:12px' }, '任務完成進度：' + (t ? Math.round(overall(t) * 100) + '%（' + STAGES[t.stage] + '）' : '—')),
-      h('div', { style: 'font-size:12px' }, '協作中：' + (s.talkMode ? '是，與 ' + (s.partnerName || (Object.values(STAFF).find((o) => o.partner === s.id) || {}).name || '同事') + ' 討論' : '否')),
-      h('div', { class: 'row' }, h('button', { class: 'ghost', onclick: () => flyTo({ tx: s.pos.x, tz: s.pos.z, dist: 14, pol: 0.9 }) }, '鏡頭跟隨')),
-      h('h3', { style: 'margin-top:4px' }, '工作紀錄'), h('div', { class: 'log' }, s.log.length ? s.log.slice(0, 10).map((l) => h('div', null, h('b', null, l.t), l.text)) : [h('div', null, '尚無紀錄')])));
-  } else if (sel.type === 'recep') {
-    box.append(h('h3', null, '接待員'), nameEdit('rc', RECEP.name), h('div', { class: 'card' },
+  if (sel.type === 'recep') {  } else if (sel.type === 'recep') {
+    box.append(h('h3', null, '接待員'), h('div', { class: 'card' },
       h('b', { style: 'font-size:15px' }, '歡迎來到 AI OFFICE'),
       h('div', { style: 'line-height:1.65' }, '這是一間 AI 創意設計公司。入口接待連著中央花台交誼區，從這裡可以走到每個部門。'),
-      h('div', { style: 'line-height:1.65;color:var(--muted)' }, '企劃部接收 CEO 任務並整合內容；設計部負責視覺與 Mockup；研究部做市場與案例研究；作品展示室可換海報、開啟作品集；公共休息室全員都能使用。'),
       h('h3', { style: 'margin-top:2px' }, '帶我參觀'),
       h('div', { class: 'row' }, ['hub', 'plan', 'design', 'research', 'show', 'lounge'].map((id) => h('button', { class: 'ghost', onclick: () => focusRoom(id) }, ROOMS[id].name.replace('／AI 總控', ''))))));
-  } else if (sel.type === 'desk') {
-    const s = STAFF[sel.id], t = s.task;
-    box.append(h('h3', null, '工作桌 · ' + s.name), t ? taskCard(t) : h('div', { class: 'card', style: 'color:var(--muted)' }, '目前沒有指派任務。'), h('div', { class: 'row' }, h('button', { class: 'ghost', onclick: () => { sel = { type: 'staff', id: s.id }; renderInspect(true); } }, '查看員工')));
-  } else if (sel.type === 'board') {
-    const title = { kanban: '企劃部任務看板', dash: 'AI 總控中心', research: '研究看板' }[sel.id];
-    box.append(h('h3', null, title));
-    const list = TASKS.slice().reverse(); if (!list.length) box.append(h('div', { style: 'color:var(--muted)' }, '尚無任務'));
-    list.forEach((t) => { box.append(taskCard(t), h('div', { class: 'log', style: 'max-height:70px;margin:-2px 0 6px' }, t.log.slice(0, 3).map((l) => h('div', null, h('b', null, l.t), l.text)))); });
   } else if (sel.type === 'room') {
     const r = ROOMS[sel.id], ppl = Object.values(STAFF).filter((s) => roomAt(s.pos.x, s.pos.z) === sel.id);
     box.append(h('h3', null, '房間'), h('div', { class: 'card' }, h('b', { style: 'font-size:15px' }, r.name), h('div', { style: 'color:var(--muted)' }, '目前在此：' + (ppl.length ? ppl.map((s) => s.name).join('、') : '無人'))));
-  } else if (sel.type === 'poster') {
-    box.append(h('h3', null, '海報 ' + (sel.id + 1)), h('div', { class: 'card' }, h('div', null, '選擇圖片檔，替換這張展示海報。'), h('button', { class: 'primary', onclick: () => { posterIdx = sel.id; $('#file').click(); } }, '上傳作品圖片')));
   }
 }
-let posterIdx = 0;
-const fileIn = h('input', { type: 'file', accept: 'image/*', id: 'file', hidden: '' }); document.body.append(fileIn);
-fileIn.addEventListener('change', () => {
-  const f = fileIn.files[0]; if (!f) return; const fr = new FileReader();
-  fr.onload = () => { const img = new Image(); img.onload = () => { const tex = posters[posterIdx].userData.tex, g = tex._g, w = 300, hh = 400, sc = Math.max(w / img.width, hh / img.height);
-    g.drawImage(img, (w - img.width * sc) / 2, (hh - img.height * sc) / 2, img.width * sc, img.height * sc); tex.needsUpdate = true; }; img.src = fr.result; };
-  fr.readAsDataURL(f); fileIn.value = '';
-});
 function openPortal() { // the "作品集" sign in the showroom links straight to the owner's portfolio
   const m = $('#modal'); m.hidden = false; m.replaceChildren(); const url = 'https://cometonair.tumblr.com';
   m.append(h('div', { class: 'box' }, h('b', { style: 'font-size:16px' }, '個人作品集'), h('div', { style: 'color:var(--muted);line-height:1.6' }, '作品集會在新視窗開啟。'),
@@ -1805,8 +1592,6 @@ $('#kFast').onclick = () => { WALK.fast = true; $('#kFast').classList.add('on');
 $('#bRoof').onclick = () => { loungeCeil.visible = !loungeCeil.visible; $('#bRoof').textContent = '天花板：' + (loungeCeil.visible ? '顯示' : '隱藏'); };
 $('#bDay').onclick = () => setMode('day'); $('#bNight').onclick = () => setMode('night'); $('#bTw').onclick = () => setMode('tw');
 $('#wClear').onclick = () => setWeather('clear'); $('#wCloud').onclick = () => setWeather('cloud'); $('#wRain').onclick = () => setWeather('rain');
-$('#ntGo').onclick = () => { const v = $('#ntTitle').value.trim() || ('新任務 ' + (taskSeq + 1)); const t = addTask(v, $('#ntRes').checked); $('#ntTitle').value = ''; sel = { type: 'board', id: 'kanban' }; renderInspect(); markDirty(); };
-$('#ntTitle').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#ntGo').click(); });
 
 /* picking */
 function pickAt(e) {
@@ -1830,31 +1615,23 @@ function hoverCheck(e) { const n = performance.now(); if (n - hoverT < 90) retur
 
 /* ---------- boot ---------- */
 Object.values(STAFF).forEach((s) => { s.atDeskTarget = true; });
-addTask('春季新品視覺企劃', false, 2, 0.35); addTask('品牌識別更新提案', true, 3); addTask('商品 Mockup 情境圖', false, 4, 0.4);
-TASKS.forEach((t) => { t.log = t.log.slice(); }); slog(STAFF.p1, '接手「春季新品視覺企劃」'); slog(STAFF.d1, '接手「商品 Mockup 情境圖」');
-document.fonts && document.fonts.ready.then(() => { Object.values(STAFF).forEach((s) => { s.lastLabel = ''; }); markDirty(); });
+slog(STAFF.p1, '開始今天的工作'); slog(STAFF.d1, '開始今天的工作');
+document.fonts && document.fonts.ready.then(() => { Object.values(STAFF).forEach((s) => { s.lastLabel = ''; }); drawKanban(); });
 let last = performance.now(), accU = 0, accB = 0, clock = 0;
 function frame(nowMs) {
   requestAnimationFrame(frame);
-  const dt = Math.min(0.05, (nowMs - last) / 1000); last = nowMs; const sdt = dt * 0.7; clock += sdt; // all staff / task speeds run 30% slower
+  const dt = Math.min(0.05, (nowMs - last) / 1000); last = nowMs; const sdt = dt * 0.7; clock += sdt; // staff move 30% slower
   stepTime(dt); updateCamera(); updateWalls();
-  ASSIGN = assignments(); tickTasks(sdt); tickStaff(sdt); tickMeeting();
+  tickStaff(sdt);
   Object.values(STAFF).forEach((s) => animateStaff(s, sdt, clock)); animateRecep(clock); if (photoFx) photoFx.update(clock); curtainFx.update(clock, sdt); busFx.update(sdt);
   clouds.children.forEach((c) => { c.position.x += c.userData.sp * dt; if (c.position.x > 190) c.position.x = -190; });
-  accB += dt; if (accB > 0.6) { accB = 0; drawDash(); drawKanban(); const st = stats(); $('#sTotal').textContent = st.total; $('#sRun').textContent = st.run; $('#sWait').textContent = st.wait; $('#sDone').textContent = st.done;
-    $('#sDept').replaceChildren(...['plan', 'design', 'research'].map((d) => h('div', null, DEPT_NAME[d] + '：' + Object.values(STAFF).filter((s) => s.dept === d).map((s) => ACT_LABEL[s.act]).join(' / ')))); }
+  accB += dt; if (accB > 0.6) { accB = 0; drawDash(); }
   accU += dt; if (accU > 1) { accU = 0; if (sel && !(document.activeElement && document.activeElement.closest && document.activeElement.closest('#inspect'))) renderInspect(); }
   renderer.render(scene, camera);
 }
 requestAnimationFrame(frame);
 setViewBtn('vIso'); setMode('tw'); try { setWeather(localStorage.getItem('aio-wx') || 'clear'); } catch (e) { setWeather('clear'); }
 
-function nameEdit(id, cur) {
-  const inp = h('input', { type: 'text', id: 'nm-' + id, value: cur, maxlength: '8', 'aria-label': '員工名字' });
-  const go = () => { renameStaff(id, inp.value); renderInspect(true); markDirty(); };
-  inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
-  return h('div', { class: 'card' }, h('h3', null, '名字（可自訂）'), h('div', { class: 'row', style: 'flex-wrap:nowrap' }, inp, h('button', { class: 'primary', onclick: go }, '儲存')));
-}
 let toastT = 0;
 function toast(msg) { const t = $('#hint'); t.textContent = msg; t.style.display = 'block'; clearTimeout(toastT); toastT = setTimeout(() => { t.textContent = '拖曳旋轉 · 滾輪縮放 · 點選房間飛行至該空間'; t.style.display = ''; }, 2600); }
 function sitOnSofa(spots) {
@@ -1862,7 +1639,7 @@ function sitOnSofa(spots) {
   const free = spots.filter((k) => !Object.values(STAFF).some((o) => o.spot === k)); if (!free.length) { toast('這張' + nm + '已經坐滿了'); return; }
   const spotIdx = free[0], sp = LOUNGE_SPOTS[spotIdx], now = performance.now();
   let s = sel && sel.type === 'staff' ? STAFF[sel.id] : null;
-  if (!s) { const ppl = Object.values(STAFF); s = ppl.find((o) => o.act === 'idle' || o.act === 'wait') || ppl.find((o) => o.act !== 'work') || ppl[0]; }
+  if (!s) { const ppl = Object.values(STAFF); s = ppl.find((o) => o.act === 'idle') || ppl.find((o) => o.act !== 'work') || ppl[0]; }
   s.spot = spotIdx; s.holdUntil = s.restUntil = now + 30000; s.atDeskTarget = false; s.talkMode = false; s.talkUntil = 0; s.partner = null; s.heading = '前往' + nm;
   routeTo(s, sp.x, sp.z, sp.yaw, sp.pose, false); slog(s, '坐上' + nm); toast(s.name + ' 去坐' + nm);
 }
@@ -1871,16 +1648,16 @@ function sitOn(idx) {
   const taken = Object.values(STAFF).find((o) => o.spot === spotIdx);
   if (taken) { toast(taken.name + ' 已經坐在這個懶骨頭上了'); return; }
   let s = sel && sel.type === 'staff' ? STAFF[sel.id] : null;
-  if (!s) { const ppl = Object.values(STAFF); s = ppl.find((o) => o.act === 'idle' || o.act === 'wait') || ppl.find((o) => o.act !== 'work') || ppl[0]; }
+  if (!s) { const ppl = Object.values(STAFF); s = ppl.find((o) => o.act === 'idle') || ppl.find((o) => o.act !== 'work') || ppl[0]; }
   s.spot = spotIdx; s.holdUntil = s.restUntil = now + 30000; s.atDeskTarget = false; s.talkMode = false; s.talkUntil = 0; s.partner = null; s.heading = '前往懶骨頭';
   routeTo(s, sp.x, sp.z, sp.yaw, sp.pose, false); slog(s, '坐上' + ['黃色', '粉紅色', '淺灰色'][idx] + '懶骨頭');
   toast(s.name + ' 去坐' + ['黃色', '粉紅色', '淺灰色'][idx] + '懶骨頭');
 }
 /* layout: keep side panels clear of the top and bottom bars at any width */
 {
-  const root = document.documentElement, topEl = $('#top'), botEl = $('#bottom');
-  const fit = () => { root.style.setProperty('--topH', topEl.offsetHeight + 'px'); root.style.setProperty('--botH', botEl.offsetHeight + 'px'); };
-  fit(); addEventListener('resize', fit); if (window.ResizeObserver) { const ro = new ResizeObserver(fit); ro.observe(topEl); ro.observe(botEl); }
+  const root = document.documentElement, topEl = $('#top');
+  const fit = () => { root.style.setProperty('--topH', topEl.offsetHeight + 'px'); root.style.setProperty('--botH', '0px'); };
+  fit(); addEventListener('resize', fit); if (window.ResizeObserver) { const ro = new ResizeObserver(fit); ro.observe(topEl); }
   const B = document.body, sync = () => { $('#leftToggle').setAttribute('aria-expanded', B.classList.contains('leftOpen')); $('#rightToggle').setAttribute('aria-expanded', B.classList.contains('rightOpen')); };
   $('#leftToggle').onclick = () => { B.classList.remove('rightOpen'); B.classList.toggle('leftOpen'); sync(); };
   $('#rightToggle').onclick = () => { B.classList.remove('leftOpen'); B.classList.toggle('rightOpen'); sync(); };
@@ -1888,11 +1665,6 @@ function sitOn(idx) {
   el.addEventListener('pointerdown', () => { B.classList.remove('leftOpen', 'rightOpen'); sync(); });
 }
 
-{ const sw = $('#sWait').parentElement; sw.style.cursor = 'pointer'; sw.title = '查看等待審核的資料'; sw.addEventListener('click', () => { const t = firstPending(); if (t) openReview(t); else { sel = { type: 'board', id: 'dash' }; renderInspect(true); } }); }
-$('#mtGo').onclick = () => { if (MEET.on) endMeeting(); else { startMeeting($('#mtTopic').value); } };
-$('#mtTopic').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#mtGo').click(); });
-
-try { openReview = function () {}; } catch (e) {}
 </script>
 
 </body></html>
