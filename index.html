@@ -1,9 +1,15 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>AI Office</title>
+<meta name="description" content="AI OFFICE：互動式 3D 虛擬 AI 創意設計公司，可旋轉、縮放，逛逛各部門。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AI Office">
+<meta property="og:description" content="互動式 3D 虛擬 AI 創意設計公司，可旋轉、縮放，逛逛各部門。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AI Office">
+<meta name="twitter:description" content="互動式 3D 虛擬 AI 創意設計公司，可旋轉、縮放，逛逛各部門。">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: full-bleed 3D canvas; floating glass HUD panels (top bar, left rooms, right inspector, bottom stats). */
+/* Layout: full-bleed 3D canvas; floating glass HUD panels (top bar, left rooms, right inspector). */
 :root{
   --bg:#e9e4da; --panel:rgba(250,247,240,.9); --panel-solid:#faf7f0; --fg:#2b2a27; --muted:#76736a;
   --line:rgba(43,42,39,.14); --accent:#3f7d5a; --accent-fg:#fff; --warm:#d9902f; --danger:#b5503c;
@@ -1070,19 +1076,19 @@ const busFx = { tex: null, update(dt) { if (this.tex) this.tex.offset.x = (this.
   const cv2 = (w, h, fn) => { const c = document.createElement('canvas'); c.width = w; c.height = h; fn(c.getContext('2d')); return c; };
   // arrival light box on the roof, facing the street
   const lb = cv2(256, 160, (g) => { g.fillStyle = '#16181c'; g.fillRect(0, 0, 256, 160); g.textBaseline = 'middle';
-    [['102', 0], ['15', 1], ['20', 2]].forEach(([n, i]) => { const y = 28 + i * 50; g.fillStyle = '#ffb21a'; g.beginPath(); g.arc(46, y - 3, 11, Math.PI, 0); g.lineTo(58, y + 9); g.lineTo(34, y + 9); g.closePath(); g.fill(); g.beginPath(); g.arc(46, y + 13, 3.5, 0, 6.3); g.fill(); g.font = '700 38px "DM Mono",monospace'; g.fillText(n, 100, y + 2); }); });
+    [['102', 0], ['15', 1], ['107', 2]].forEach(([n, i]) => { const y = 28 + i * 50; g.fillStyle = '#ffb21a'; g.beginPath(); g.arc(46, y - 3, 11, Math.PI, 0); g.lineTo(58, y + 9); g.lineTo(34, y + 9); g.closePath(); g.fill(); g.beginPath(); g.arc(46, y + 13, 3.5, 0, 6.3); g.fill(); g.font = '700 38px "DM Mono",monospace'; g.fillText(n, 100, y + 2); }); });
   // arrival light box hung under the roof at the south end, readable by buses approaching along the street
   box(1.15, 0.78, 0.1, BK, 0, 2.91, 1.88, bus, false); [-0.4, 0.4].forEach((dx) => box(0.05, 0.06, 0.05, BK, dx, 2.54, 1.88, bus, false));
   [[1.935, 0], [1.825, Math.PI]].forEach(([pz, ry]) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(1.05, 0.66), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(lb) })); m.rotation.y = ry; m.position.set(0, 2.91, pz + (ry ? -0.005 : 0.005)); bus.add(m); });
   // side marquee for people on the bench: scrolling amber text on the south end
-  const mq = cv2(1024, 96, (g) => { g.fillStyle = '#101114'; g.fillRect(0, 0, 1024, 96); g.fillStyle = '#ffb21a'; g.font = '700 54px "Noto Sans TC",sans-serif'; g.textBaseline = 'middle'; g.fillText('102 往安平  3 分　15 往圖書館  8 分　20 往永康火車站  進站中　', 10, 50); });
+  const mq = cv2(1024, 96, (g) => { g.fillStyle = '#101114'; g.fillRect(0, 0, 1024, 96); g.fillStyle = '#ffb21a'; g.font = '700 54px "Noto Sans TC",sans-serif'; g.textBaseline = 'middle'; g.fillText('102 往安平  3 分　15 往圖書館  8 分　107 往地方法院  進站中　', 10, 50); });
   const mtex = new THREE.CanvasTexture(mq); mtex.wrapS = THREE.RepeatWrapping; mtex.repeat.x = 0.5; busFx.tex = mtex;
   box(1.5, 0.42, 0.1, BK, 0, 2.05, -1.8, bus, false); [-0.62, 0.62].forEach((dx) => box(0.05, 0.3, 0.05, BK, dx, 2.3, -1.8, bus, false));
   { const m = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.3), new THREE.MeshBasicMaterial({ map: mtex })); m.position.set(0, 2.05, -1.745); bus.add(m); }
   // timetable board on a pole that stops under it
   box(0.05, 1.9, 0.05, BK, 1.15, 0.95, -2.4, bus, false);
   const bc = cv2(340, 420, (g3) => { g3.fillStyle = '#fff'; g3.fillRect(0, 0, 340, 420); g3.fillStyle = '#1f5fa8'; g3.fillRect(0, 0, 340, 70); g3.fillStyle = '#fff'; g3.textAlign = 'center'; g3.font = '700 40px "Noto Sans TC",sans-serif'; g3.fillText('公車時刻表', 170, 50); g3.textAlign = 'left';
-    [['102', '往安平', '07:10 08:30 12:20 18:05'], ['15', '往圖書館', '07:40 09:00 13:10 18:40'], ['20', '往永康火車站', '08:05 10:15 15:20 19:10']].forEach(([r, d, t], i) => { const y = 112 + i * 100; g3.fillStyle = '#1f5fa8'; g3.font = '700 36px "DM Mono",monospace'; g3.fillText(r, 18, y); g3.fillStyle = '#222'; g3.font = '700 26px "Noto Sans TC",sans-serif'; g3.fillText(d, 96, y); g3.font = '500 21px "DM Mono",monospace'; g3.fillText(t, 18, y + 38); g3.fillStyle = '#ddd'; g3.fillRect(16, y + 54, 308, 2); });
+    [['102', '往安平', '07:10 08:30 12:20 18:05'], ['15', '往圖書館', '07:40 09:00 13:10 18:40'], ['107', '往地方法院', '08:05 10:15 15:20 19:10']].forEach(([r, d, t], i) => { const y = 112 + i * 100; g3.fillStyle = '#1f5fa8'; g3.font = '700 36px "DM Mono",monospace'; g3.fillText(r, 18, y); g3.fillStyle = '#222'; g3.font = '700 26px "Noto Sans TC",sans-serif'; g3.fillText(d, 96, y); g3.font = '500 21px "DM Mono",monospace'; g3.fillText(t, 18, y + 38); g3.fillStyle = '#ddd'; g3.fillRect(16, y + 54, 308, 2); });
     g3.fillStyle = '#888'; g3.font = '500 18px "Noto Sans TC",sans-serif'; g3.fillText('示意時刻，非真實班次', 20, 404); });
   const bsign = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.99), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(bc), side: THREE.DoubleSide })); bsign.rotation.y = Math.PI / 2; bsign.position.set(1.18, 2.4, -2.4); bus.add(bsign);
   mergeStatic(bus);
@@ -1666,5 +1672,3 @@ function sitOn(idx) {
 }
 
 </script>
-
-</body></html>
