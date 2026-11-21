@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Office Light</title>
+<meta name="description" content="AI OFFICE：互動式 3D 虛擬 AI 創意設計公司，可旋轉、縮放，逛逛各部門。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AI Office">
+<meta property="og:description" content="互動式 3D 虛擬 AI 創意設計公司，可旋轉、縮放，逛逛各部門。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AI Office">
+<meta name="twitter:description" content="互動式 3D 虛擬 AI 創意設計公司，可旋轉、縮放，逛逛各部門。">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="stage"></div>
+
+<button id="rightToggle" class="hud lt-btn rt-btn" aria-expanded="false" aria-label="檢視" title="檢視"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/></svg></button>
+<div class="hud" id="top">
+  <div id="clock"><span id="clk">08:00</span><small id="phase">白天</small><small style="margin-left:8px;font-weight:700;letter-spacing:.08em;color:#e8a84a">LIGHT</small></div>
+  <div class="row" role="group" aria-label="時間">
+    <button id="bDay" class="ibtn" title="白天" aria-label="白天"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+    <button id="bNight" class="ibtn" title="夜晚" aria-label="夜晚"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></button>
+    <button id="bTw" class="on"><span class="long">跟隨</span>台灣時間</button>
+  </div>
+  <div class="row" role="group" aria-label="天氣">
+    <span class="wlabel" style="font-size:11px;color:var(--muted)">天氣</span>
+    <button id="wClear" class="ibtn on" title="晴天" aria-label="晴天"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" fill="currentColor"/><path d="M12 1.5v2.5M12 20v2.5M3.5 3.5l1.8 1.8M18.7 18.7l1.8 1.8M1.5 12H4M20 12h2.5M3.5 20.5l1.8-1.8M18.7 5.3l1.8-1.8"/></svg></button><button id="wCloud" class="ibtn" title="陰天" aria-label="陰天"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 19a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 11a4 4 0 0 1 0 8z"/></svg></button><button id="wRain" class="ibtn" title="雨天" aria-label="雨天"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 7a4 4 0 0 1 0 8z"/><path d="M8 18.5l-1 2.5M12.5 18.5l-1 2.5M17 18.5l-1 2.5"/></svg></button>
+  </div>
+</div>
+
+<button id="leftToggle" class="hud lt-btn" aria-expanded="false" aria-label="視角與房間選單" title="視角／房間">☰</button>
+<div class="hud" id="left">
+  <button class="sheetClose" aria-label="關閉">✕</button>
+  <div class="viewbtns">
+    <h3>視角</h3>
+    <div class="row">
+      <button id="vIso" class="on">斜角</button><button id="vTop">俯視</button><button id="vPano">全景</button>
+    </div>
+    <h3 style="margin-top:8px">走路速度</h3>
+    <div class="row"><button id="kSlow" class="on">慢</button><button id="kFast">快</button></div>
+    <div class="row" style="margin-top:6px"><button id="bRoof" class="ghost" style="width:100%">天花板：隱藏</button></div>
+  </div>
+  <div>
+    <h3>燈光</h3>
+    <div class="row"><button id="lA" class="on lbtn" style="flex:1" aria-label="大廳燈光" aria-pressed="true"><svg class="bulb" viewBox="0 0 384 512" aria-hidden="true"><!-- Font Awesome Free 6 (CC BY 4.0) lightbulb, solid --><path d="M272 384c9.6-31.9 29.5-59.1 49.2-86.2l0 0c5.2-7.1 10.4-14.2 15.4-21.4c19.8-28.5 31.4-63 31.4-100.3C368 78.8 289.2 0 192 0S16 78.8 16 176c0 37.3 11.6 71.9 31.4 100.3c5 7.2 10.2 14.3 15.4 21.4l0 0c19.8 27.1 39.7 54.4 49.2 86.2H272zM192 512c44.2 0 80-35.8 80-80V416H112v16c0 44.2 35.8 80 80 80zM112 176c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-61.9 50.1-112 112-112c8.8 0 16 7.2 16 16s-7.2 16-16 16c-44.2 0-80 35.8-80 80z"/></svg><span>大廳</span></button></div>
+    <div class="row" style="margin-top:4px"><button id="lB" class="on lbtn" style="flex:1" aria-label="辦公室燈光" aria-pressed="true"><svg class="bulb" viewBox="0 0 384 512" aria-hidden="true"><!-- Font Awesome Free 6 (CC BY 4.0) lightbulb, solid --><path d="M272 384c9.6-31.9 29.5-59.1 49.2-86.2l0 0c5.2-7.1 10.4-14.2 15.4-21.4c19.8-28.5 31.4-63 31.4-100.3C368 78.8 289.2 0 192 0S16 78.8 16 176c0 37.3 11.6 71.9 31.4 100.3c5 7.2 10.2 14.3 15.4 21.4l0 0c19.8 27.1 39.7 54.4 49.2 86.2H272zM192 512c44.2 0 80-35.8 80-80V416H112v16c0 44.2 35.8 80 80 80zM112 176c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-61.9 50.1-112 112-112c8.8 0 16 7.2 16 16s-7.2 16-16 16c-44.2 0-80 35.8-80 80z"/></svg><span>辦公室</span></button></div>
+  </div>
+  <div>
+    <h3>房間</h3>
+    <div class="rooms" id="roomList"></div>
+  </div>
+</div>
+
+<div class="hud" id="right">
+  <button class="sheetClose" aria-label="關閉">✕</button>
+  <div id="inspect"><h3>檢視</h3><div style="color:var(--muted);line-height:1.6">點選接待員。<br>拖曳旋轉，滾輪縮放，右鍵拖曳平移。</div></div>
+</div>
+
+<div id="hint">拖曳旋轉 · 滾輪縮放 · 點選房間飛行至該空間</div>
+<div id="modal" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+<script src="js/core/01-core.js"></script>
+<script src="js/interaction/02-time-weather.js"></script>
+<script src="js/interaction/03-camera.js"></script>
+<script src="js/scene/04-walls.js"></script>
+<script src="js/scene/05-rooms-furniture.js"></script>
+<script src="js/scene/06-props.js"></script>
+<script src="js/scene/07-reception-hub.js"></script>
+<script src="js/scene/08-departments.js"></script>
+<script src="js/scene/09-outdoor.js"></script>
+<script src="js/scene/10-showroom-patio.js"></script>
+<script src="js/scene/11-lounge.js"></script>
+<script src="js/agents/12-staff.js"></script>
+<script src="js/agents/13-receptionist.js"></script>
+<script src="js/agents/14-scheduler.js"></script>
+<script src="js/scene/15-boards.js"></script>
+<script src="js/interaction/16-ui.js"></script>
+<script src="js/interaction/17-mold-calculator.js"></script>
+<script src="js/core/99-boot.js"></script>
+</body>
+</html>
